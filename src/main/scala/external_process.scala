@@ -7,30 +7,38 @@ import scalafx.beans.value.ObservableValue
 import scalafx.geometry.Insets
 import scalafx.scene.{Group, Scene}
 import scalafx.scene.control.Button
-import scalafx.scene.layout.GridPane
-import scalafx.scene.paint.Color
+import scalafx.scene.layout.HBox
 import scalafx.stage.Stage
+import scala.sys.process._
 
 
 object ExternalProcess extends JFXApp {
-  private final val button1 = new Button{
-    text = "process1"
-    onAction = handle {getClass().getResourceAsStream("process1.py")}
-  }
-  private final val button2 = new Button{
-    text = "process2"
-    onAction = handle {getClass().getResourceAsStream("process2.py")}
-  }
-
-  private final val textColor = Color.BLACK
-
-  private final val root = new Group() 
-
+  val builder = new StringBuilder
 	stage = new JFXApp.PrimaryStage {
 		title = "Slider Sample"
-		val s = new Scene(root, 300, 200)
-
-    
-  }  
-
-}
+    width = 200
+    height = 100
+		scene = new Scene {
+      content = new HBox {
+        padding = Insets(20)
+        spacing = 10
+        content = Seq(
+          new Button{
+            text = "process1"
+            onAction = handle {("python3 " + getClass().getResourceAsStream("process1.py")) ! ProcessLogger(line => {
+              builder ++= line
+              builder ++= System.lineSeparator
+              }, line => ())}
+          },
+          new Button{
+            text = "process2"
+            onAction = handle {("python3 " + getClass().getResourceAsStream("process2.py")) ! ProcessLogger(line => {
+              builder ++= line
+              builder ++= System.lineSeparator
+              }, line => ())}
+          }
+        )
+      }
+    }
+  }    
+} 
