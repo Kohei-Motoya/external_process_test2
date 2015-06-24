@@ -25,17 +25,29 @@ object ExternalProcess extends JFXApp {
         content = Seq(
           new Button{
             text = "process1"
-            onAction = handle {("python3 " + getClass().getResourceAsStream("process1.py")) ! ProcessLogger(line => {
+            onAction = handle {val ret = ("python3 " + getClass().getResource("process1.py").getFile()) ! ProcessLogger(line => {
               builder ++= line
               builder ++= System.lineSeparator
-              }, line => ())}
+              }, line => ())
+            val text = builder.toString
+            println("Command Text:")
+            println(text)
+            printf("Command Result = %d%n", ret)
+            builder.clear
+          }
           },
           new Button{
             text = "process2"
-            onAction = handle {("python3 " + getClass().getResourceAsStream("process2.py")) ! ProcessLogger(line => {
+            onAction = handle {val ret = ("python3 " + getClass().getResource("process2.py").getFile()) ! ProcessLogger(line => {
               builder ++= line
               builder ++= System.lineSeparator
-              }, line => ())}
+              }, line => ())
+            val text = builder.toString
+            println("Command Text:")
+            println(text)
+            printf("Command Result = %d%n", ret)
+            builder.clear
+          }
           }
         )
       }
